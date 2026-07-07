@@ -1,0 +1,63 @@
+# ============================================================================
+#  prompt.zsh — hand-rolled, zsh-native prompt (no external prompt binary)
+#  ☀ directory git-branch/status ➜          (right side: cmd duration ≥ 2s)
+#  Colors: Teal #5f8787, Peach #fbcb97, Orange #e78a53, Grey #888888
+#  Everything here is plain zsh — override any of it from ~/.zshrc.local,
+#  which is sourced after this file.
+# ============================================================================
+
+setopt PROMPT_SUBST
+zmodload zsh/datetime
+autoload -Uz vcs_info add-zsh-hook
+
+# --- git segment ------------------------------------------------------------
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' unstagedstr '*'
+zstyle ':vcs_info:git:*' stagedstr '+'
+zstyle ':vcs_info:git:*' formats       ' %F{#888888}%B %b%%b%f%F{#e78a53}%B%m%u%c%%b%f'
+zstyle ':vcs_info:git:*' actionformats ' %F{#888888}%B %b(%a)%%b%f%F{#e78a53}%B%m%u%c%%b%f'
+zstyle ':vcs_info:git+set-message:*' hooks git-untracked
+
+# vcs_info doesn't track untracked files natively — add '?' when present
++vi-git-untracked() {
+    if [[ -n $(git ls-files --others --exclude-standard 2>/dev/null | head -1) ]]; then
+        hook_com[misc]+='?'
+    fi
+}
+
+# --- hooks: blank line, command duration, read-only dir ----------------------
+typeset -g _prompt_cmd_start= _prompt_duration= _prompt_ro= _prompt_ran_once=
+
+_prompt_preexec() { _prompt_cmd_start=$EPOCHREALTIME }
+
+_prompt_precmd() {
+    # blank line between prompts (but not before the first)
+    if [[ -n $_prompt_ran_once ]]; then print; else _prompt_ran_once=1; fi
+
+    _prompt_duration=
+    if [[ -n $_prompt_cmd_start ]]; then
+        local -i s=$(( EPOCHREALTIME - _prompt_cmd_start ))
+        if (( s >= 2 )); then
+            if (( s >= 60 )); then
+                _prompt_duration="%F{#e78a53}%Btook $((s / 60))m $((s % 60))s%b%f"
+            else
+                _prompt_duration="%F{#e78a53}%Btook ${s}s%b%f"
+            fi
+        fi
+        _prompt_cmd_start=
+    fi
+
+    _prompt_ro=
+    [[ -w $PWD ]] || _prompt_ro=' 🔒'
+
+    vcs_info
+}
+
+add-zsh-hook preexec _prompt_preexec
+add-zsh-hook precmd  _prompt_precmd
+
+# --- assembly ----------------------------------------------------------------
+# Directory: last 3 components, '…/' when truncated (matches old behavior)
+PROMPT='%F{#fbcb97}%B☀ %b%f%F{#5f8787}%B%(4~|…/%3~|%~)%b%f${_prompt_ro}${vcs_info_msg_0_} %(?.%F{#fbcb97}.%F{#e78a53})%B➜%b%f '
+RPROMPT='${_prompt_duration}'

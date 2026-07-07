@@ -1,7 +1,6 @@
 # Core CLI toolchain for these dotfiles.
 # Install with: brew bundle --file=Brewfile
 
-brew "starship"    # prompt
 brew "mise"        # runtime version manager (replaces nvm/pyenv)
 brew "fzf"         # fuzzy finder (Ctrl-R / Ctrl-T / Alt-C, fzf-tab)
 brew "zoxide"      # smarter cd (z / zi)

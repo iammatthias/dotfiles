@@ -3,7 +3,7 @@
 Minimal, fast zsh setup for macOS. Terminal-agnostic — works in Terminal.app, Ghostty, iTerm2, whatever.
 
 - **Plugin manager:** [Zinit](https://github.com/zdharma-continuum/zinit) with turbo/deferred loading (plugins load after the first prompt)
-- **Prompt:** [Starship](https://starship.rs)
+- **Prompt:** hand-rolled, pure zsh (`zsh/prompt.zsh`) — no prompt binary, nothing to install, fully overridable from `~/.zshrc.local`
 - **Runtimes:** [mise](https://mise.jdx.dev) (replaces nvm/pyenv — per-project versions via `.mise.toml` / `.tool-versions`)
 - **Tuned for agentic development:** PATH/env live in `.zshenv` so the non-interactive shells coding agents spawn get the right toolchain without paying interactive-startup cost (~0.2s interactive startup)
 
@@ -21,17 +21,17 @@ The installer symlinks the files into `$HOME` (backing up anything already there
 | File | Role |
 |---|---|
 | `zsh/.zshenv` | PATH + env for **every** shell (login, scripts, agent-spawned). Lean and silent. |
-| `zsh/.zshrc` | Interactive-only: plugins, completions, aliases, prompt. |
+| `zsh/.zshrc` | Interactive-only: plugins, completions, aliases. |
+| `zsh/prompt.zsh` | The prompt (☀ dir git ➜, cmd duration on the right). Pure zsh: `vcs_info` + precmd hooks. |
 | `zsh/.zprofile` | Intentionally empty (env lives in `.zshenv`). |
-| `config/starship.toml` | Prompt config (custom dark palette). |
-| `Brewfile` | Core CLI toolchain: starship, mise, fzf, zoxide, eza, fd, bat, ripgrep, delta, gh. |
+| `Brewfile` | Core CLI toolchain: mise, fzf, zoxide, eza, fd, bat, ripgrep, delta, gh. |
 
 ## Machine-specific config
 
-Anything personal or per-machine stays out of the repo. Two optional files are sourced if they exist:
+Anything personal or per-machine stays out of the repo. Two optional files are sourced if they exist — and because every layer of this setup (prompt included) is plain zsh, they can override **all** of it:
 
 - `~/.zshenv.local` — extra PATH entries, private env vars (sourced at the end of `.zshenv`)
-- `~/.zshrc.local` — extra aliases, functions, tool hooks (sourced near the end of `.zshrc`, before Starship)
+- `~/.zshrc.local` — extra aliases, functions, tool hooks, prompt tweaks (sourced at the very end of `.zshrc`)
 
 ## Notable behavior
 

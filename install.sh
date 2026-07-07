@@ -28,10 +28,9 @@ link() {
 }
 
 echo "Linking dotfiles from $DOTFILES_DIR"
-link "$DOTFILES_DIR/zsh/.zshenv"          "$HOME/.zshenv"
-link "$DOTFILES_DIR/zsh/.zshrc"           "$HOME/.zshrc"
-link "$DOTFILES_DIR/zsh/.zprofile"        "$HOME/.zprofile"
-link "$DOTFILES_DIR/config/starship.toml" "$HOME/.config/starship.toml"
+link "$DOTFILES_DIR/zsh/.zshenv"   "$HOME/.zshenv"
+link "$DOTFILES_DIR/zsh/.zshrc"    "$HOME/.zshrc"
+link "$DOTFILES_DIR/zsh/.zprofile" "$HOME/.zprofile"
 
 # Install the CLI toolchain if Homebrew is available (skip with --no-brew)
 if [[ "${1:-}" != "--no-brew" ]]; then

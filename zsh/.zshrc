@@ -1,6 +1,6 @@
 # ============================================================================
 #  ~/.zshrc — interactive shell config
-#  Plugin manager: Zinit (turbo / deferred loading)  •  Prompt: Starship
+#  Plugin manager: Zinit (turbo / deferred loading)  •  Prompt: zsh/prompt.zsh
 #  Tuned for agentic development: fast startup, lean non-interactive shells
 #  (PATH/env live in ~/.zshenv), deterministic per-project toolchains (mise).
 #  Machine-specific additions go in ~/.zshrc.local (sourced at the end).
@@ -231,15 +231,12 @@ else
 fi
 
 # ------------------------------------
-# Machine-specific config (not tracked in the dotfiles repo)
+# Prompt — hand-rolled, zsh-native (zsh/prompt.zsh, next to this file)
 # ------------------------------------
-[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+source "${${(%):-%N}:A:h}/prompt.zsh"
 
 # ------------------------------------
-# Starship Prompt Initialization — keep at the end
+# Machine-specific config (not tracked) — kept last so it can override
+# anything above, including the prompt
 # ------------------------------------
-if command -v starship &>/dev/null; then
-    eval "$(starship init zsh)"
-else
-    echo "Warning: Starship prompt not found."
-fi
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
