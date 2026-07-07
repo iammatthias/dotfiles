@@ -1,0 +1,73 @@
+# ============================================================================
+#  Ghostty config — custom dark theme, matched to the zsh prompt palette
+#  Reload in-app with Cmd+Shift+, (some keys need a full restart)
+#  Docs: https://ghostty.org/docs/config
+#  Machine-specific overrides: ~/.config/ghostty/config.local (see bottom)
+# ============================================================================
+
+# ------------------------------------
+# Font — Ghostty's bundled JetBrains Mono (includes Nerd Font symbols, so the
+# prompt's  glyph renders out of the box). Set a font-family in config.local
+# to use a machine-installed font instead.
+# ------------------------------------
+font-size = 14
+# Slightly looser lines read better for long agent/log output
+adjust-cell-height = 8%
+
+# ------------------------------------
+# Colors — custom dark palette
+#   bg #121113 · fg #ffffff · teal #5f8787 · peach #fbcb97 · orange #e78a53
+# ------------------------------------
+background = #121113
+foreground = #ffffff
+cursor-color = #fbcb97
+cursor-text = #121113
+selection-background = #2b2b2b
+selection-foreground = #ffffff
+
+# 16-color ANSI palette (warm/muted, harmonized with the syntax theme)
+palette = 0=#39383a
+palette = 1=#e06c5d
+palette = 2=#8a9a5b
+palette = 3=#fbcb97
+palette = 4=#6a8fb5
+palette = 5=#9a7ecc
+palette = 6=#5f8787
+palette = 7=#c1c1c1
+palette = 8=#888888
+palette = 9=#e78a53
+palette = 10=#a3b08a
+palette = 11=#ffd9a8
+palette = 12=#82a8d0
+palette = 13=#b29ad8
+palette = 14=#7faaaa
+palette = 15=#ffffff
+
+# ------------------------------------
+# Window / padding
+# ------------------------------------
+window-padding-x = 12
+window-padding-y = 12
+window-padding-balance = true
+
+# ------------------------------------
+# Cursor / input quality-of-life
+# ------------------------------------
+cursor-style = block
+cursor-style-blink = false
+mouse-hide-while-typing = true
+# Treat macOS Option as Alt so zsh word-motions and fzf's Alt-C (cd) work
+macos-option-as-alt = true
+
+# ------------------------------------
+# Quick terminal — Ctrl+` drops a terminal from the top
+# ------------------------------------
+keybind = global:ctrl+`=toggle_quick_terminal
+quick-terminal-animation-duration = 0.1
+quick-terminal-position = top
+
+# ------------------------------------
+# Machine-specific config (not tracked) — kept last so it overrides anything
+# above. The '?' makes it optional: no error if the file doesn't exist.
+# ------------------------------------
+config-file = ?~/.config/ghostty/config.local

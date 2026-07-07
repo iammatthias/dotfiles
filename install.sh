@@ -28,9 +28,19 @@ link() {
 }
 
 echo "Linking dotfiles from $DOTFILES_DIR"
-link "$DOTFILES_DIR/zsh/.zshenv"   "$HOME/.zshenv"
-link "$DOTFILES_DIR/zsh/.zshrc"    "$HOME/.zshrc"
-link "$DOTFILES_DIR/zsh/.zprofile" "$HOME/.zprofile"
+link "$DOTFILES_DIR/zsh/.zshenv"      "$HOME/.zshenv"
+link "$DOTFILES_DIR/zsh/.zshrc"       "$HOME/.zshrc"
+link "$DOTFILES_DIR/zsh/.zprofile"    "$HOME/.zprofile"
+link "$DOTFILES_DIR/ghostty/config"   "$HOME/.config/ghostty/config"
+
+# Ghostty also reads the macOS-native location; back up any config there so it
+# can't fight the XDG one we just linked
+GHOSTTY_APPSUPPORT="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+if [[ -f "$GHOSTTY_APPSUPPORT" && ! -L "$GHOSTTY_APPSUPPORT" ]]; then
+    mkdir -p "$BACKUP_DIR"
+    mv "$GHOSTTY_APPSUPPORT" "$BACKUP_DIR/ghostty-appsupport-config"
+    echo "  backup  $GHOSTTY_APPSUPPORT -> $BACKUP_DIR/"
+fi
 
 # Install the CLI toolchain if Homebrew is available (skip with --no-brew)
 if [[ "${1:-}" != "--no-brew" ]]; then

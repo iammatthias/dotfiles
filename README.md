@@ -24,6 +24,7 @@ The installer symlinks the files into `$HOME` (backing up anything already there
 | `zsh/.zshrc` | Interactive-only: plugins, completions, aliases. |
 | `zsh/prompt.zsh` | The prompt (☀ dir git ➜, cmd duration on the right). Pure zsh: `vcs_info` + precmd hooks. |
 | `zsh/.zprofile` | Login shells: restores `.zshenv`'s PATH ordering after macOS `path_helper` demotes it. |
+| `ghostty/config` | Ghostty terminal: same dark palette, quick terminal on Ctrl+`. Uses the bundled JetBrains Mono. |
 | `Brewfile` | Core CLI toolchain: mise, fzf, zoxide, eza, fd, bat, ripgrep, delta, gh. |
 
 ## Machine-specific config
@@ -32,6 +33,7 @@ Anything personal or per-machine stays out of the repo. Two optional files are s
 
 - `~/.zshenv.local` — extra PATH entries, private env vars (sourced at the end of `.zshenv`)
 - `~/.zshrc.local` — extra aliases, functions, tool hooks, prompt tweaks (sourced at the very end of `.zshrc`)
+- `~/.config/ghostty/config.local` — Ghostty overrides, e.g. a licensed font-family (optional include at the end of the base config)
 
 ## Notable behavior
 
