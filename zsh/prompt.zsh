@@ -17,7 +17,14 @@ zstyle ':vcs_info:git:*' unstagedstr '*'
 zstyle ':vcs_info:git:*' stagedstr '+'
 zstyle ':vcs_info:git:*' formats       ' %F{#888888}%B %b%%b%f%F{#e78a53}%B%m%u%c%%b%f'
 zstyle ':vcs_info:git:*' actionformats ' %F{#888888}%B %b(%a)%%b%f%F{#e78a53}%B%m%u%c%%b%f'
-zstyle ':vcs_info:git+set-message:*' hooks git-untracked
+zstyle ':vcs_info:git+set-message:*' hooks git-escape git-untracked
+
+# Branch/action names end up prompt-expanded (PROMPT_SUBST) — neutralize any
+# '%' they contain so a branch like "x%F{red}y" can't inject escapes
++vi-git-escape() {
+    hook_com[branch]=${hook_com[branch]//\%/%%}
+    hook_com[action]=${hook_com[action]//\%/%%}
+}
 
 # vcs_info doesn't track untracked files natively — add '?' when present
 +vi-git-untracked() {
@@ -37,7 +44,7 @@ _prompt_precmd() {
 
     _prompt_duration=
     if [[ -n $_prompt_cmd_start ]]; then
-        local -i s=$(( EPOCHREALTIME - _prompt_cmd_start ))
+        local -i s=$(( (EPOCHREALTIME - _prompt_cmd_start) + 0.5 ))  # rounded
         if (( s >= 2 )); then
             if (( s >= 60 )); then
                 _prompt_duration="%F{#e78a53}%Btook $((s / 60))m $((s % 60))s%b%f"

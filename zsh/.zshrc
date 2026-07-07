@@ -26,6 +26,11 @@ setopt NO_CASE_GLOB
 setopt COMPLETE_IN_WORD
 setopt ALWAYS_TO_END
 setopt AUTO_MENU
+setopt INTERACTIVE_COMMENTS   # allow # comments at the prompt (pasting snippets)
+
+# Pin emacs keybindings — otherwise zsh silently switches to vi mode
+# whenever $EDITOR/$VISUAL contains "vi" (e.g. set in ~/.zshrc.local)
+bindkey -e
 
 # ------------------------------------
 # Zinit — bootstrap (self-installs on first run)
@@ -138,10 +143,23 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)         # smarter suggestions
 # Tool Initializations (each guarded — absent tools are silently skipped)
 # ------------------------------------
 
+# Cache slow `<tool> init` output to a file and source that instead — spawning
+# the tool costs 40–80ms per shell; sourcing the cache is ~1ms. Regenerates
+# whenever the tool binary is newer than the cache (i.e. after upgrades).
+_cached_init() {
+    local bin=$1 cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/$2.zsh"
+    shift 2
+    if [[ ! -s $cache || $bin -nt $cache ]]; then
+        command mkdir -p "${cache:h}"
+        "$bin" "$@" > "$cache" 2>/dev/null
+    fi
+    source "$cache"
+}
+
 # mise — runtime version manager (Node/Python/Go/…). Replaces nvm + pyenv.
 # Shims are already on PATH via ~/.zshenv; this adds the interactive hook
 # (auto-switches versions on cd into a project with .mise.toml / .tool-versions).
-command -v mise &>/dev/null && eval "$(mise activate zsh)"
+(( $+commands[mise] )) && _cached_init "$commands[mise]" mise-activate activate zsh
 
 # zoxide — smarter cd. Provides `z` and `zi`.
 command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
@@ -150,7 +168,7 @@ command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
 command -v fzf &>/dev/null && source <(fzf --zsh 2>/dev/null)
 
 # uv (Python package manager) completions
-command -v uv &>/dev/null && eval "$(uv generate-shell-completion zsh)"
+(( $+commands[uv] )) && _cached_init "$commands[uv]" uv-completion generate-shell-completion zsh
 
 # bun completions
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
@@ -231,9 +249,12 @@ else
 fi
 
 # ------------------------------------
-# Prompt — hand-rolled, zsh-native (zsh/prompt.zsh, next to this file)
+# Prompt — hand-rolled, zsh-native (zsh/prompt.zsh, next to this file;
+# falls back to the default zsh prompt if this .zshrc was copied standalone)
 # ------------------------------------
-source "${${(%):-%N}:A:h}/prompt.zsh"
+_prompt_file="${${(%):-%N}:A:h}/prompt.zsh"
+[[ -f "$_prompt_file" ]] && source "$_prompt_file"
+unset _prompt_file
 
 # ------------------------------------
 # Machine-specific config (not tracked) — kept last so it can override

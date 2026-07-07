@@ -7,15 +7,15 @@
 # Auto-deduplicate PATH/fpath (keeps first occurrence, drops repeats)
 typeset -U path PATH fpath FPATH
 
-# Homebrew (Apple Silicon / Intel)
-if [[ -x /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [[ -x /usr/local/bin/brew ]]; then
-    eval "$(/usr/local/bin/brew shellenv)"
+# Homebrew (Apple Silicon / Intel). `brew shellenv` costs ~30ms, so skip it when
+# a parent shell already ran it (nested and agent-spawned shells inherit the env).
+if [[ -z "$HOMEBREW_PREFIX" ]]; then
+    if [[ -x /opt/homebrew/bin/brew ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -x /usr/local/bin/brew ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
 fi
-
-# Rust / Cargo
-[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
 
 # Go
 export GOPATH="$HOME/go"
