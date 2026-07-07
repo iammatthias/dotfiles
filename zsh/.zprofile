@@ -1,3 +1,8 @@
-# ~/.zprofile — login shells only.
-# Environment and PATH live in ~/.zshenv so that every shell (including the
-# non-interactive ones coding agents spawn) inherits them. Nothing needed here.
+# ~/.zprofile — login shells only. Runs AFTER /etc/zprofile (path_helper),
+# which reorders PATH to put system dirs first, demoting everything ~/.zshenv
+# set up. Re-assert the .zshenv ordering; entries path_helper added that we
+# don't know about stay, appended after ours (typeset -U dedupes, first wins).
+if [[ -n "$_ZENV_PATH" ]]; then
+    path=( ${(s.:.)_ZENV_PATH} $path )
+    unset _ZENV_PATH
+fi

@@ -37,3 +37,8 @@ export PATH
 # Machine-specific environment (extra PATH entries, private env vars, etc.).
 # Not tracked in the dotfiles repo — create the file if you need it.
 [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"
+
+# Snapshot the PATH we just built. On macOS login shells, /etc/zprofile runs
+# path_helper AFTER this file and moves system dirs (/usr/bin, …) ahead of
+# everything above; ~/.zprofile uses this snapshot to restore our ordering.
+typeset -g _ZENV_PATH="$PATH"

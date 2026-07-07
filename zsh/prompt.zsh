@@ -44,8 +44,9 @@ _prompt_precmd() {
 
     _prompt_duration=
     if [[ -n $_prompt_cmd_start ]]; then
-        local -i s=$(( (EPOCHREALTIME - _prompt_cmd_start) + 0.5 ))  # rounded
-        if (( s >= 2 )); then
+        local -F raw=$(( EPOCHREALTIME - _prompt_cmd_start ))
+        local -i s=$(( raw + 0.5 ))  # rounded for display; gate on the raw time
+        if (( raw >= 2 )); then
             if (( s >= 60 )); then
                 _prompt_duration="%F{#e78a53}%Btook $((s / 60))m $((s % 60))s%b%f"
             else

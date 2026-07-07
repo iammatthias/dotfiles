@@ -5,7 +5,7 @@ Minimal, fast zsh setup for macOS. Terminal-agnostic — works in Terminal.app, 
 - **Plugin manager:** [Zinit](https://github.com/zdharma-continuum/zinit) with turbo/deferred loading (plugins load after the first prompt)
 - **Prompt:** hand-rolled, pure zsh (`zsh/prompt.zsh`) — no prompt binary, nothing to install, fully overridable from `~/.zshrc.local`
 - **Runtimes:** [mise](https://mise.jdx.dev) (replaces nvm/pyenv — per-project versions via `.mise.toml` / `.tool-versions`)
-- **Tuned for agentic development:** PATH/env live in `.zshenv` so the non-interactive shells coding agents spawn get the right toolchain without paying interactive-startup cost (~0.2s interactive startup)
+- **Tuned for agentic development:** PATH/env live in `.zshenv` so the non-interactive shells coding agents spawn get the right toolchain without paying interactive-startup cost (~0.14s interactive startup, ~0ms for agent-spawned shells)
 
 ## Install
 
@@ -23,7 +23,7 @@ The installer symlinks the files into `$HOME` (backing up anything already there
 | `zsh/.zshenv` | PATH + env for **every** shell (login, scripts, agent-spawned). Lean and silent. |
 | `zsh/.zshrc` | Interactive-only: plugins, completions, aliases. |
 | `zsh/prompt.zsh` | The prompt (☀ dir git ➜, cmd duration on the right). Pure zsh: `vcs_info` + precmd hooks. |
-| `zsh/.zprofile` | Intentionally empty (env lives in `.zshenv`). |
+| `zsh/.zprofile` | Login shells: restores `.zshenv`'s PATH ordering after macOS `path_helper` demotes it. |
 | `Brewfile` | Core CLI toolchain: mise, fzf, zoxide, eza, fd, bat, ripgrep, delta, gh. |
 
 ## Machine-specific config

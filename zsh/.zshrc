@@ -10,7 +10,7 @@
 # History Configuration
 # ------------------------------------
 HISTFILE=~/.zsh_history
-HISTSIZE=1000000
+HISTSIZE=1200000              # > SAVEHIST so HIST_EXPIRE_DUPS_FIRST has room to work
 SAVEHIST=1000000
 setopt SHARE_HISTORY          # share across sessions; implies incremental append
 setopt EXTENDED_HISTORY       # record timestamps
@@ -93,7 +93,8 @@ zinit wait lucid for \
 # Completion styling (works with fzf-tab)
 # ------------------------------------
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'  # case-insensitive
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+# LS_COLORS is usually unset on macOS; '' falls back to zsh's default colors
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS:-''}"
 zstyle ':completion:*' menu no                       # required by fzf-tab
 zstyle ':completion:*:descriptions' format '[%d]'
 # fzf-tab UI
@@ -151,9 +152,12 @@ _cached_init() {
     shift 2
     if [[ ! -s $cache || $bin -nt $cache ]]; then
         command mkdir -p "${cache:h}"
-        "$bin" "$@" > "$cache" 2>/dev/null
+        # write to a temp file + rename so concurrent shells never source a
+        # half-written cache
+        "$bin" "$@" > "$cache.$$" 2>/dev/null && command mv -f "$cache.$$" "$cache" \
+            || command rm -f "$cache.$$"
     fi
-    source "$cache"
+    [[ -s $cache ]] && source "$cache"
 }
 
 # mise — runtime version manager (Node/Python/Go/…). Replaces nvm + pyenv.
