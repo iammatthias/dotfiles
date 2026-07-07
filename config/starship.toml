@@ -17,7 +17,6 @@ $git_status\
 $nodejs\
 $rust\
 $python\
-$solidity\
 $package\
 $character"""
 
@@ -68,10 +67,6 @@ style = "bold #fbcb97" # string color (Peach)
 # Only detect python projects by config files, ignoring loose .py files in ~
 detect_extensions = []
 detect_files = ["pyproject.toml", "requirements.txt", ".python-version", "uv.lock", "Pipfile", "setup.py"]
-
-[solidity]
-symbol = "Ξ "
-style = "bold #5f8787" # keyword color (Teal)
 
 [package]
 symbol = "📦 "
