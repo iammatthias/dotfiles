@@ -1,0 +1,39 @@
+# ~/.zshenv — sourced for EVERY zsh: login, interactive, scripts, and the
+# non-interactive shells that coding agents (Claude Code, etc.) spawn per command.
+# Keep this lean and silent (no output, no slow evals): it runs on every invocation.
+# Putting PATH/env here (not just in .zshrc) is what makes agent shells find the
+# right tools without paying the full interactive-startup cost.
+
+# Auto-deduplicate PATH/fpath (keeps first occurrence, drops repeats)
+typeset -U path PATH fpath FPATH
+
+# Homebrew (Apple Silicon / Intel)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+# Rust / Cargo
+[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
+
+# Go
+export GOPATH="$HOME/go"
+
+# Highest-priority bin dirs first. mise shims lead so a project's pinned
+# Node/Python/etc. (via .mise.toml / .tool-versions) wins automatically —
+# in agent shells too.
+_zenv_prepend=(
+  "$HOME/.local/share/mise/shims"
+  "$HOME/.local/bin"
+  "$HOME/.cargo/bin"
+  "$GOPATH/bin"
+)
+# Keep only the ones that actually exist (N-/ = nullglob, existing dirs), in order
+path=( ${^_zenv_prepend}(N-/) $path )
+unset _zenv_prepend
+export PATH
+
+# Machine-specific environment (extra PATH entries, private env vars, etc.).
+# Not tracked in the dotfiles repo — create the file if you need it.
+[[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"

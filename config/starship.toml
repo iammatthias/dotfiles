@@ -1,0 +1,83 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+# NOTE: top-level keys (palette/format/right_format) must appear BEFORE any
+# [table] header — TOML assigns later bare keys to the preceding table.
+palette = "custom_dark"
+
+# A minimal left prompt (the ☀ is a static glyph — no subprocess per prompt)
+format = """
+[☀ ](bold #fbcb97)\
+$directory\
+$git_branch\
+$git_status\
+$nodejs\
+$rust\
+$python\
+$solidity\
+$package\
+$character"""
+
+# Right prompt for long running commands and specific contexts
+right_format = """$cmd_duration"""
+
+# Palette Definitions
+[palettes.custom_dark]
+background = "#121113"
+foreground = "#ffffff"
+comment = "#888888"
+string = "#fbcb97"      # Peach
+number = "#e78a53"      # Orange
+keyword = "#5f8787"     # Teal
+function = "#aaaaaa"    # Grey
+variable = "#c1c1c1"    # Light Grey
+selection = "#222222"
+
+# Replace the '❯' symbol in the prompt with '➜'
+[character]
+success_symbol = '[➜](bold #fbcb97)' # string color (Peach)
+error_symbol = '[➜](bold #e78a53)'   # number color (Orange - acting as red)
+
+[directory]
+truncation_length = 3
+truncation_symbol = "…/"
+read_only = " 🔒"
+style = "bold #5f8787" # keyword color (Teal)
+
+[git_branch]
+symbol = " "
+style = "bold #aaaaaa" # function color (Grey)
+
+[git_status]
+style = "bold #e78a53" # number color (Orange - acting as red/changed)
+
+[nodejs]
+symbol = " "
+style = "bold #fbcb97" # string color (Peach)
+
+[rust]
+symbol = " "
+style = "bold #e78a53" # number color (Orange)
+
+[python]
+symbol = "🐍 "
+style = "bold #fbcb97" # string color (Peach)
+# Only detect python projects by config files, ignoring loose .py files in ~
+detect_extensions = []
+detect_files = ["pyproject.toml", "requirements.txt", ".python-version", "uv.lock", "Pipfile", "setup.py"]
+
+[solidity]
+symbol = "Ξ "
+style = "bold #5f8787" # keyword color (Teal)
+
+[package]
+symbol = "📦 "
+style = "bold #c1c1c1" # variable color (Light Grey)
+disabled = false
+
+[cmd_duration]
+min_time = 2_000
+style = "bold #e78a53" # number color (Orange)
