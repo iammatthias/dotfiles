@@ -1,6 +1,6 @@
 # ============================================================================
 #  prompt.zsh — hand-rolled, zsh-native prompt (no external prompt binary)
-#  ☀ directory git-branch/status ➜          (right side: cmd duration ≥ 2s)
+#  ☀ directory git-branch/status ➜    (right side: cmd duration ≥ 2s, clock)
 #  Colors: Teal #5f8787, Peach #fbcb97, Orange #e78a53, Grey #888888
 #  Everything here is plain zsh — override any of it from ~/.zshrc.local,
 #  which is sourced after this file.
@@ -68,4 +68,13 @@ add-zsh-hook precmd  _prompt_precmd
 # --- assembly ----------------------------------------------------------------
 # Directory: last 3 components, '…/' when truncated (matches old behavior)
 PROMPT='%F{#fbcb97}%B☀ %b%f%F{#5f8787}%B%(4~|…/%3~|%~)%b%f${_prompt_ro}${vcs_info_msg_0_} %(?.%F{#fbcb97}.%F{#e78a53})%B➜%b%f '
-RPROMPT='${_prompt_duration}'
+RPROMPT='${_prompt_duration:+${_prompt_duration} }%F{#888888}%*%f'
+
+# The clock shows when a command *ran*, not when the prompt was drawn: redraw
+# the prompt as the line is accepted, so idle time doesn't leave stale times
+# in scrollback
+_prompt_accept_line() {
+    zle reset-prompt
+    zle .accept-line
+}
+zle -N accept-line _prompt_accept_line
