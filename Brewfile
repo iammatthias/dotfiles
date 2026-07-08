@@ -10,3 +10,5 @@ brew "bat"         # modern cat
 brew "ripgrep"     # modern grep
 brew "git-delta"   # better git diffs
 brew "gh"          # GitHub CLI
+brew "bun"         # JS runtime / package manager
+brew "uv"          # Python package manager (completions wired in .zshrc)

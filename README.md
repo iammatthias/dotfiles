@@ -25,7 +25,7 @@ The installer symlinks the files into `$HOME` (backing up anything already there
 | `zsh/prompt.zsh` | The prompt (☀ dir git ➜, cmd duration on the right). Pure zsh: `vcs_info` + precmd hooks. |
 | `zsh/.zprofile` | Login shells: restores `.zshenv`'s PATH ordering after macOS `path_helper` demotes it. |
 | `ghostty/config` | Ghostty terminal: same dark palette, quick terminal on Ctrl+`. Uses the bundled JetBrains Mono. |
-| `Brewfile` | Core CLI toolchain: mise, fzf, zoxide, eza, fd, bat, ripgrep, delta, gh. |
+| `Brewfile` | Core CLI toolchain: mise, fzf, zoxide, eza, fd, bat, ripgrep, delta, gh, bun, uv. |
 
 ## Machine-specific config
 
