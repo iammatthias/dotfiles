@@ -6,7 +6,3 @@ if [[ -n "$_ZENV_PATH" ]]; then
     path=( ${(s.:.)_ZENV_PATH} $path )
     unset _ZENV_PATH
 fi
-
-# Added by OrbStack: command-line tools and integration
-# This won't be added again if you remove it.
-source ~/.orbstack/shell/init.zsh 2>/dev/null || :

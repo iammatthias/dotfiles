@@ -55,6 +55,10 @@ autoload -Uz _zinit
 zinit ice blockf atpull'zinit creinstall -q .'
 zinit light zsh-users/zsh-completions
 
+# OrbStack ships its own compdefs (docker, orb) — the other half of the
+# init.zsh we stopped sourcing.
+fpath+=( "$HOME/.orbstack/shell/completions/zsh"(N-/) )
+
 # Initialize completions with a cached dump; full rebuild at most once per day.
 # Tool inits below (zoxide/fzf/uv) call compdef, so this must run before them.
 autoload -Uz compinit
@@ -154,8 +158,17 @@ _cached_init() {
         command mkdir -p "${cache:h}"
         # write to a temp file + rename so concurrent shells never source a
         # half-written cache
-        "$bin" "$@" > "$cache.$$" 2>/dev/null && command mv -f "$cache.$$" "$cache" \
-            || command rm -f "$cache.$$"
+        if "$bin" "$@" > "$cache.$$" 2>/dev/null; then
+            # Strip any PATH the tool baked into its output. `mise activate`
+            # emits a literal `export PATH='<absolute snapshot>'` first line;
+            # cached, that snapshot is replayed into every future shell and
+            # silently clobbers whatever ~/.zshenv built. ~/.zshenv owns PATH.
+            command sed '/^export PATH=/d' "$cache.$$" > "$cache.$$.f" \
+                && command mv -f "$cache.$$.f" "$cache.$$"
+            command mv -f "$cache.$$" "$cache"
+        else
+            command rm -f "$cache.$$" "$cache.$$.f"
+        fi
     fi
     [[ -s $cache ]] && source "$cache"
 }

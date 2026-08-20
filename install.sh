@@ -28,10 +28,15 @@ link() {
 }
 
 echo "Linking dotfiles from $DOTFILES_DIR"
-link "$DOTFILES_DIR/zsh/.zshenv"      "$HOME/.zshenv"
-link "$DOTFILES_DIR/zsh/.zshrc"       "$HOME/.zshrc"
-link "$DOTFILES_DIR/zsh/.zprofile"    "$HOME/.zprofile"
-link "$DOTFILES_DIR/ghostty/config"   "$HOME/.config/ghostty/config"
+link "$DOTFILES_DIR/zsh/.zshenv"          "$HOME/.zshenv"
+link "$DOTFILES_DIR/zsh/.zshrc"           "$HOME/.zshrc"
+link "$DOTFILES_DIR/zsh/.zprofile"        "$HOME/.zprofile"
+link "$DOTFILES_DIR/ghostty/config"       "$HOME/.config/ghostty/config"
+# Optional amber-CRT layer the main config pulls in with `config-file = ?…`,
+# plus the shader dir it references relatively
+link "$DOTFILES_DIR/ghostty/config.retro" "$HOME/.config/ghostty/config.retro"
+link "$DOTFILES_DIR/ghostty/shaders"      "$HOME/.config/ghostty/shaders"
+link "$DOTFILES_DIR/herdr/config.toml"    "$HOME/.config/herdr/config.toml"
 
 # Ghostty also reads the macOS-native location; back up any config there so it
 # can't fight the XDG one we just linked

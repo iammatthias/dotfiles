@@ -29,6 +29,10 @@ _zenv_prepend=(
   "$HOME/.cargo/bin"
   "$GOPATH/bin"
   "$HOME/.opencode/bin"
+  # OrbStack (docker/kubectl/orb shims). .zprofile used to source the generated
+  # ~/.orbstack/shell/init.zsh, which hardcodes an absolute /Users/<name> path.
+  # That script only sets PATH + fpath, both reproduced here and in .zshrc.
+  "$HOME/.orbstack/bin"
   # Homebrew listed here too (not only via shellenv): nested shells inherit
   # HOMEBREW_PREFIX and skip the eval above, and path_helper re-promotes
   # /usr/bin in every login shell — this keeps brew ahead of system dirs.
