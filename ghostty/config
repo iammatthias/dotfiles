@@ -65,6 +65,15 @@ macos-option-as-alt = true
 keybind = global:ctrl+`=toggle_quick_terminal
 quick-terminal-animation-duration = 0.1
 quick-terminal-position = top
+# Dashboard mode: the visor stays visible when it loses focus; Ctrl+` dismisses
+quick-terminal-autohide = false
+
+# ------------------------------------
+# Amber phosphor layer — the base palette warm-shifted toward a CRT amber,
+# plus the scanline shader. Applies to ALL windows (Ghostty has no per-window
+# theming); comment this line out to return to the stock palette above.
+# ------------------------------------
+config-file = ?~/.config/ghostty/config.retro
 
 # ------------------------------------
 # Machine-specific config (not tracked) — kept last so it overrides anything

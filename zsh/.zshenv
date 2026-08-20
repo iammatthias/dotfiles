@@ -28,6 +28,11 @@ _zenv_prepend=(
   "$HOME/.local/bin"
   "$HOME/.cargo/bin"
   "$GOPATH/bin"
+  # Homebrew listed here too (not only via shellenv): nested shells inherit
+  # HOMEBREW_PREFIX and skip the eval above, and path_helper re-promotes
+  # /usr/bin in every login shell — this keeps brew ahead of system dirs.
+  "${HOMEBREW_PREFIX:-/opt/homebrew}/bin"
+  "${HOMEBREW_PREFIX:-/opt/homebrew}/sbin"
 )
 # Keep only the ones that actually exist (N-/ = nullglob, existing dirs), in order
 path=( ${^_zenv_prepend}(N-/) $path )

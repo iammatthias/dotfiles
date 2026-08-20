@@ -1,0 +1,42 @@
+# ~/.config/ghostty/config.retro — amber phosphor blend
+# A modern take on an amber CRT, derived from the base warm palette: same hue
+# relationships (teal/olive/peach/orange), warm-shifted toward P3 amber with a
+# parchment white point. Applies to ALL windows (Ghostty has no per-window
+# theming). Pairs with shaders/crt.glsl for scanlines/glow/vignette.
+
+# Warm black with an amber cast; parchment foreground instead of pure white
+background = #131009
+foreground = #f0dcbb
+cursor-color = #ffb000
+cursor-text = #131009
+selection-background = #3a3226
+selection-foreground = #fff3dd
+minimum-contrast = 1.1
+
+# Base palette, amber-shifted — hues keep their identity so syntax coloring
+# still reads the same, just through an amber tube
+palette = 0=#3a342c
+palette = 1=#e0684f
+palette = 2=#98a44e
+palette = 3=#ffbe5c
+palette = 4=#7d95ae
+palette = 5=#b08cc0
+palette = 6=#6b8f82
+palette = 7=#c9bfa8
+palette = 8=#8f8574
+palette = 9=#e78a53
+palette = 10=#b5b878
+palette = 11=#ffd28a
+palette = 12=#9db0c4
+palette = 13=#c8a8c8
+palette = 14=#92aa9c
+palette = 15=#fff3dd
+
+# HUD feel: slight translucency + macOS blur
+background-opacity = 0.94
+background-blur = 20
+
+# CRT texture: static scanlines/glow/vignette — no animation loop, so no
+# continuous GPU redraw (battery-friendly on the MacBooks)
+custom-shader = shaders/crt.glsl
+custom-shader-animation = false
