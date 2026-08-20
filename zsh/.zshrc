@@ -265,6 +265,3 @@ unset _prompt_file
 # anything above, including the prompt
 # ------------------------------------
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
-
-# opencode
-export PATH=/Users/iammatthias/.opencode/bin:$PATH
