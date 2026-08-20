@@ -33,6 +33,23 @@ setopt INTERACTIVE_COMMENTS   # allow # comments at the prompt (pasting snippets
 bindkey -e
 
 # ------------------------------------
+# TERM sanity — keep inbound ssh sessions from garbling input
+# ------------------------------------
+# Ghostty/kitty/WezTerm ship their own terminfo *inside the app bundle* and point
+# shells at it via $TERMINFO. sshd-spawned shells never inherit that variable, so
+# an inbound ssh session arrives with a $TERM ncurses can't resolve (the entry is
+# on disk, just not on the search path). ZLE then repaints the line with bogus
+# cursor caps and every keystroke smears — same story for tmux-256color, which
+# macOS's stock terminfo also lacks. Fall back to an entry that always exists.
+# Runs before Zinit so the plugins below bind keys against a valid $terminfo.
+zmodload -i zsh/terminfo 2>/dev/null
+if [[ -z "${terminfo[cuu1]}" ]]; then
+    export TERM=xterm-256color
+    zmodload -u zsh/terminfo 2>/dev/null
+    zmodload -i zsh/terminfo 2>/dev/null
+fi
+
+# ------------------------------------
 # Zinit — bootstrap (self-installs on first run)
 # ------------------------------------
 ZINIT_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
