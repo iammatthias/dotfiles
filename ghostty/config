@@ -69,6 +69,18 @@ quick-terminal-position = top
 quick-terminal-autohide = false
 
 # ------------------------------------
+# SSH — carry our terminfo to remote hosts
+# ------------------------------------
+# Ghostty ships xterm-ghostty inside the app bundle and points shells at it via
+# $TERMINFO. sshd-spawned shells never inherit that var, so without this an
+# inbound session lands on a $TERM the remote can't resolve and ZLE smears every
+# keystroke. ssh-terminfo installs the entry into the remote's ~/.terminfo on
+# first connect; ssh-env sets a sane $TERM where that isn't possible.
+# The full list is spelled out because this key replaces the default set rather
+# than merging into it — the other four are Ghostty's defaults, unchanged.
+shell-integration-features = cursor,no-sudo,title,ssh-env,ssh-terminfo,path
+
+# ------------------------------------
 # Amber phosphor layer — the base palette warm-shifted toward a CRT amber,
 # plus the scanline shader. Applies to ALL windows (Ghostty has no per-window
 # theming); comment this line out to return to the stock palette above.
