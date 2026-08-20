@@ -12,3 +12,8 @@ brew "git-delta"   # better git diffs
 brew "gh"          # GitHub CLI
 brew "bun"         # JS runtime / package manager
 brew "uv"          # Python package manager (completions wired in .zshrc)
+brew "herdr"       # agent multiplexer (config tracked in herdr/config.toml)
+
+# Casks — GUI apps this repo carries config or PATH wiring for.
+# Ghostty is installed outside brew here, so it is deliberately not listed.
+cask "orbstack"    # Docker/Linux VMs; provides docker/kubectl/orb on PATH
