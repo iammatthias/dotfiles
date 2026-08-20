@@ -39,8 +39,8 @@ bindkey -e
 # shells at it via $TERMINFO. sshd-spawned shells never inherit that variable, so
 # an inbound ssh session arrives with a $TERM ncurses can't resolve (the entry is
 # on disk, just not on the search path). ZLE then repaints the line with bogus
-# cursor caps and every keystroke smears — same story for tmux-256color, which
-# macOS's stock terminfo also lacks. Fall back to an entry that always exists.
+# cursor caps and every keystroke smears. Generic on purpose: it catches any
+# $TERM the local database can't load, whatever emulator or multiplexer set it.
 # Runs before Zinit so the plugins below bind keys against a valid $terminfo.
 zmodload -i zsh/terminfo 2>/dev/null
 if [[ -z "${terminfo[cuu1]}" ]]; then
