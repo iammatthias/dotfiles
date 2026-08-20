@@ -76,9 +76,10 @@ quick-terminal-autohide = false
 # inbound session lands on a $TERM the remote can't resolve and ZLE smears every
 # keystroke. ssh-terminfo installs the entry into the remote's ~/.terminfo on
 # first connect; ssh-env sets a sane $TERM where that isn't possible.
-# The full list is spelled out because this key replaces the default set rather
-# than merging into it — the other four are Ghostty's defaults, unchanged.
-shell-integration-features = cursor,no-sudo,title,ssh-env,ssh-terminfo,path
+# This key MERGES into the defaults (cursor,no-sudo,title,no-ssh-env,
+# no-ssh-terminfo,path) rather than replacing them: naming these two flips only
+# them, so the other four keep tracking upstream instead of being pinned here.
+shell-integration-features = ssh-env,ssh-terminfo
 
 # ------------------------------------
 # Amber phosphor layer — the base palette warm-shifted toward a CRT amber,
