@@ -211,8 +211,15 @@ command -v fzf &>/dev/null && source <(fzf --zsh 2>/dev/null)
 # Helper Functions
 # ------------------------------------
 function reload() {
-    source ~/.zshrc
-    echo "ZSH configuration reloaded."
+    # exec, not `source ~/.zshrc`. PATH and env live in ~/.zshenv, which runs
+    # only at shell startup — re-sourcing .zshrc silently picks up none of it,
+    # while still printing a cheerful "reloaded". Replace the shell so the whole
+    # chain (.zshenv -> .zprofile -> .zshrc) actually re-runs.
+    if [[ -o login ]]; then
+        exec zsh -l
+    else
+        exec zsh
+    fi
 }
 
 function mkcd() {
