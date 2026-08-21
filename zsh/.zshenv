@@ -28,6 +28,7 @@ _zenv_prepend=(
   "$HOME/.local/bin"
   "$HOME/.cargo/bin"
   "$GOPATH/bin"
+  "$HOME/.bun/bin"        # `bun install -g` global binaries
   "$HOME/.opencode/bin"
   # OrbStack (docker/kubectl/orb shims). .zprofile used to source the generated
   # ~/.orbstack/shell/init.zsh, which hardcodes an absolute /Users/<name> path.
