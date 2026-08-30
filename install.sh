@@ -38,6 +38,26 @@ link "$DOTFILES_DIR/ghostty/config.retro" "$HOME/.config/ghostty/config.retro"
 link "$DOTFILES_DIR/ghostty/shaders"      "$HOME/.config/ghostty/shaders"
 link "$DOTFILES_DIR/herdr/config.toml"    "$HOME/.config/herdr/config.toml"
 
+# ssh: multiplexing defaults live in the repo, but ~/.ssh/config itself stays
+# local (it holds hostnames, IPs and identity files that don't belong in a
+# public repo). Prepend an Include instead of symlinking the whole file.
+SSH_CONFIG="$HOME/.ssh/config"
+SSH_INCLUDE="Include $DOTFILES_DIR/ssh/config.d/*.conf"
+mkdir -p "$HOME/.ssh"
+chmod 700 "$HOME/.ssh"
+touch "$SSH_CONFIG"
+chmod 600 "$SSH_CONFIG"
+if grep -qF "$SSH_INCLUDE" "$SSH_CONFIG"; then
+    echo "  ok      $SSH_CONFIG (Include present)"
+else
+    # ssh takes the first value it sees for each keyword, and Include must come
+    # before any Host block to apply globally — so this goes at the very top.
+    printf '%s\n\n%s' "$SSH_INCLUDE" "$(cat "$SSH_CONFIG")" > "$SSH_CONFIG.tmp"
+    mv "$SSH_CONFIG.tmp" "$SSH_CONFIG"
+    chmod 600 "$SSH_CONFIG"
+    echo "  include $SSH_CONFIG <- ssh/config.d/*.conf"
+fi
+
 # Ghostty also reads the macOS-native location; back up any config there so it
 # can't fight the XDG one we just linked
 GHOSTTY_APPSUPPORT="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
