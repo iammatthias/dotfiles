@@ -37,6 +37,29 @@ link "$DOTFILES_DIR/ghostty/config"       "$HOME/.config/ghostty/config"
 link "$DOTFILES_DIR/ghostty/config.retro" "$HOME/.config/ghostty/config.retro"
 link "$DOTFILES_DIR/ghostty/shaders"      "$HOME/.config/ghostty/shaders"
 link "$DOTFILES_DIR/herdr/config.toml"    "$HOME/.config/herdr/config.toml"
+link "$DOTFILES_DIR/claude/CLAUDE.md"     "$HOME/.claude/CLAUDE.md"
+link "$DOTFILES_DIR/claude/agents"        "$HOME/.claude/agents"
+
+# Claude Code: settings.json stays local (Claude rewrites it, and it holds
+# per-machine hooks and permissions). Merge just the shared keys into it.
+CLAUDE_SETTINGS="$HOME/.claude/settings.json"
+if command -v python3 &>/dev/null; then
+    python3 - "$DOTFILES_DIR/claude/settings.shared.json" "$CLAUDE_SETTINGS" <<'PY'
+import json, pathlib, sys
+shared = json.loads(pathlib.Path(sys.argv[1]).read_text())
+dest = pathlib.Path(sys.argv[2])
+current = json.loads(dest.read_text()) if dest.exists() else {}
+if all(current.get(k) == v for k, v in shared.items()):
+    print(f"  ok      {dest} (shared keys present)")
+else:
+    current.update(shared)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(json.dumps(current, indent=2) + "\n")
+    print(f"  merge   {dest} <- claude/settings.shared.json")
+PY
+else
+    echo "  skip    $CLAUDE_SETTINGS (python3 not found)"
+fi
 
 # ssh: multiplexing defaults live in the repo, but ~/.ssh/config itself stays
 # local (it holds hostnames, IPs and identity files that don't belong in a

@@ -26,6 +26,8 @@ The installer symlinks the files into `$HOME` (backing up anything already there
 | `zsh/.zprofile` | Login shells: restores `.zshenv`'s PATH ordering after macOS `path_helper` demotes it. |
 | `ghostty/config` | Ghostty terminal: same dark palette, quick terminal on Ctrl+`. Uses the bundled JetBrains Mono. |
 | `ssh/config.d/*.conf` | ssh defaults for every host — connection multiplexing + keepalives. Included from `~/.ssh/config`, which stays local. |
+| `claude/CLAUDE.md`, `claude/agents/` | Claude Code global instructions and subagents (explorer, worker, researcher). Symlinked into `~/.claude/`. |
+| `claude/settings.shared.json` | Claude Code settings shared across machines (effort, advisor). Merged into `~/.claude/settings.json`, which stays local. |
 | `Brewfile` | Core CLI toolchain: mise, fzf, zoxide, eza, fd, bat, ripgrep, delta, gh, bun, uv. |
 
 ## Machine-specific config
@@ -35,6 +37,7 @@ Anything personal or per-machine stays out of the repo. Two optional files are s
 - `~/.zshenv.local` — extra PATH entries, private env vars (sourced at the end of `.zshenv`)
 - `~/.zshrc.local` — extra aliases, functions, tool hooks, prompt tweaks (sourced at the very end of `.zshrc`)
 - `~/.config/ghostty/config.local` — Ghostty overrides, e.g. a licensed font-family (optional include at the end of the base config)
+- `~/.claude/settings.json` — hooks, permissions, plugins. Not symlinked; the installer only merges the keys in `claude/settings.shared.json`.
 - `~/.ssh/config` — hostnames, IPs, identity files. Not symlinked; the installer only prepends an `Include` line pointing at `ssh/config.d/*.conf`, so host entries stay private and survive re-installs.
 
 ## Notable behavior
