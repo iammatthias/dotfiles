@@ -290,6 +290,45 @@ else
 fi
 
 # ------------------------------------
+# Terminal input-mode hygiene
+#
+# TUIs (Claude Code, vim, fzf, tmux, k9s, lazygit) switch the terminal into mouse
+# reporting and the kitty keyboard protocol on startup and switch it back on exit.
+# When one dies without running its cleanup — SSH drop, SIGKILL, panic, a pty that
+# disconnects — the terminal is left reporting. Every mouse move then spills an SGR
+# report like `35;145;37M` straight onto the prompt as literal text.
+#
+# Resetting the input modes before each prompt makes that self-healing: the next
+# prompt you land on has already cleaned up after whatever just died.
+# ------------------------------------
+_reset_input_modes() {
+    # mouse tracking: normal, button-event, any-event
+    printf '\e[?1000l\e[?1002l\e[?1003l'
+    # mouse encodings: utf-8, SGR, urxvt
+    printf '\e[?1005l\e[?1006l\e[?1015l'
+    # focus reporting (otherwise ^[[I / ^[[O land on the prompt on window switch)
+    printf '\e[?1004l'
+    # pop every pushed kitty keyboard-protocol level, not just the top one
+    # (popping past the bottom just resets to defaults)
+    printf '\e[<99u'
+    # cursor back on
+    printf '\e[?25h'
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _reset_input_modes
+
+# Bigger hammer for when the screen itself is wrecked, not just the input modes:
+# stuck in the alt screen, line-wrap off, garbage charset, echo disabled.
+fixterm() {
+    _reset_input_modes
+    printf '\e[?1049l'   # leave alt screen
+    printf '\e[?7h'      # re-enable line wrap
+    printf '\e[0m\e(B'   # drop SGR attrs, back to the ASCII charset
+    stty sane
+    clear
+}
+
+# ------------------------------------
 # Prompt — hand-rolled, zsh-native (zsh/prompt.zsh, next to this file;
 # falls back to the default zsh prompt if this .zshrc was copied standalone)
 # ------------------------------------
